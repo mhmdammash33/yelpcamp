@@ -1,17 +1,27 @@
 <%- include('../../partials/header.ejs') %>
 
+<h1>All Campgrounds:</h1>
+<section class="my-5">
+  <% for(let campground of campgrounds){ %>
+  <div class="card">
+    <div class="row">
+      <div class="col-4">
+        <img class="img-fluid" src="<%=campground.image%>" />
+      </div>
+      <div class="col-8 d-flex flex-column">
+        <div>
+          <a href="/campgrounds/<%=campground._id%>"
+            ><span class="campgroundTitle"><%=campground.title%></span></a
+          >
+          ~<span><%=campground.price%>$/per Night</span>
+        </div>
+        <div>
+          <p><%=campground.description.slice(0,100)%>...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</section>
 
-    <h1>All Campgrounds:</h1>
-    <section>
-      <% for(let campground of campgrounds){ %>
-      <a href="/campgrounds/<%=campground._id%>">
-        <h1><%=campground.title%></h1>
-        <% } %>
-      </a>
-    </section>
-
-    <h2>
-      <a href="/campgrounds/new"><button>Add new Campground</button></a>
-    </h2>
 <%- include('../../partials/footer.ejs') %>
-

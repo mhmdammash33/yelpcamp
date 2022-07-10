@@ -1,20 +1,38 @@
 <%- include('../../partials/header.ejs') %>
-
-<h1><%=campground.price%> ~ <%=campground.location%></h1>
-<p><%=campground.description%></p>
-<div>
-  <a href="/campgrounds/<%=campground._id%>/edit">
-    <button>Edit Campground</button>
-    <form
-      action="/campgrounds/<%=campground._id%>?_method=DELETE"
-      method="POST"
-    >
-      <button type="submit">Delete Campground</button>
-    </form>
-    <div>
-      <a href="/campgrounds">Back to Campgrounds</a>
+<div class="container d-flex justify-content-center my-3">
+  <div class="card">
+    <img src="<%=campground.image%>" class="card-img-top h-50" alt="..." />
+    <div class="card-body">
+      <h1 class="card-title"><%=campground.title%></h1>
+      <p class="card-text"><%=campground.description%></p>
     </div>
-  </a>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><%=campground.location%></li>
+        <li class="list-group-item"><%=campground.price%>$/Night</li>
+        <li class="list-group-item d-flex">
+          <a
+            class="display-inline"
+            href="/campgrounds/<%=campground._id%>/edit"
+          >
+            <button class="btn btn-primary display-inline mr-1">
+              Edit Campground
+            </button>
+          </a>
+          <form
+            action="/campgrounds/<%=campground._id%>?_method=DELETE"
+            method="POST"
+          >
+            <button type="submit" class="btn btn-danger">
+              Delete Campground
+            </button>
+          </form>
+        </li>
+      </ul>
+      <div class="card-footer text-muted">
+        2 days ago
+      </div>
+  </div>
 </div>
 
 <%- include('../../partials/footer.ejs') %>
