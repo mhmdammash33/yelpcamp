@@ -8,10 +8,11 @@ const bodyParser = require("body-parser");
 const ExpressError = require("./utilities/ExpressError");
 const catchAsync = require("./utilities/catchAsync");
 const validateCampground = require("./middleware/campgroundValidation");
+const validateReview = require("./middleware/reviewValidation");
 
 //Models:
 const Campground = require("./models/campground");
-const { validate } = require("./models/campground");
+const Review = require("./models/review");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -65,7 +66,7 @@ app.get(
   "/campgrounds/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
+    const campground = await Campground.findById(id).populate("reviews");
     res.render("campgrounds/show", { campground });
   })
 );
@@ -100,16 +101,41 @@ app.delete(
   })
 );
 
+//--------REVIEWS ROUTES--------------------------
+//NEW: //we placed new form on same page as campground show
+//CREATE:
+app.post(
+  "/campgrounds/:id/reviews",
+  validateReview,
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    const myReview = new Review(req.body.review);
+    campground.reviews.push(myReview);
+    await myReview.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${id}`);
+  })
+);
+
+//Delete:
+app.delete(
+  "/campgrounds/:id/reviews/:reviewId",
+  catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+  })
+);
+
 app.get("*", (req, res, next) => {
   next(new ExpressError(404, "Unfound Page!!!"));
 });
-
 //Error Handler
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something Went Wrong!" } = err;
   res.status(statusCode).render("error", { err });
 });
-
 app.listen(3000, () => {
   console.log("Serving on port 3000!!");
 });

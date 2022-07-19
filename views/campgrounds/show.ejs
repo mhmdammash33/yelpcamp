@@ -1,11 +1,12 @@
 <%- include('../../partials/header.ejs') %>
-<div class="container d-flex justify-content-center my-3">
-  <div class="card">
-    <img src="<%=campground.image%>" class="card-img-top h-50" alt="..." />
-    <div class="card-body">
-      <h1 class="card-title"><%=campground.title%></h1>
-      <p class="card-text"><%=campground.description%></p>
-    </div>
+<div class="row">
+  <div class="col-6 container d-flex justify-content-center my-3">
+    <div class="card">
+      <img src="<%=campground.image%>" class="card-img-top h-50" alt="..." />
+      <div class="card-body">
+        <h1 class="card-title"><%=campground.title%></h1>
+        <p class="card-text"><%=campground.description%></p>
+      </div>
 
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><%=campground.location%></li>
@@ -15,7 +16,7 @@
             class="display-inline"
             href="/campgrounds/<%=campground._id%>/edit"
           >
-            <button class="btn btn-primary display-inline mr-1">
+            <button class="btn btn-sm btn-primary display-inline mr-1">
               Edit Campground
             </button>
           </a>
@@ -23,16 +24,69 @@
             action="/campgrounds/<%=campground._id%>?_method=DELETE"
             method="POST"
           >
-            <button type="submit" class="btn btn-danger">
+            <button type="submit" class="btn btn-sm btn-danger">
               Delete Campground
             </button>
           </form>
         </li>
       </ul>
-      <div class="card-footer text-muted">
-        2 days ago
+      <div class="card-footer text-muted">2 days ago</div>
+    </div>
+  </div>
+  <div class="col-6 container">
+    <form
+      class="validated-form"
+      action="/campgrounds/<%=campground._id%>/reviews"
+      method="POST"
+      novalidate
+    >
+      <div class="mt-4">
+        <label for="rating" class="form-label"> Rating: </label>
+        <input
+          class="form-range"
+          type="range"
+          name="review[rating]"
+          id="rating"
+          min="1"
+          max="5"
+          value="1"
+        />
       </div>
+      <div class="mb-1">
+        <label class="form-label" for="reviewBody">Review:</label>
+        <textarea
+          class="form-control"
+          name="review[body]"
+          id="reviewBody"
+          cols="20"
+          rows="3"
+          required
+        ></textarea>
+        <div class="valid-feedback">Nice Title to Go!</div>
+        <div id="validationServerUsernameFeedback" class="invalid-feedback">
+          UnValid Rating Message!!
+        </div>
+        <button class="btn btn-success mt-2" type="submit">
+          Submit
+        </button>
+      </div>
+    </form>
+    <hr />
+    <u> <h1 class="display-5">All Reviews:</h1></u>
+    <% for(let review of campground.reviews){%>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h4 class="card-title">Rating: <%=review.rating%></h4>
+        <p class="card-text">Review: <%=review.body%></p>
+        <form
+          action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+    <%}%>
   </div>
 </div>
-
 <%- include('../../partials/footer.ejs') %>

@@ -1,0 +1,9 @@
+/* Reviews Section */
+#reviewsSection {
+  margin-top: 20px;
+}
+.singleReview {
+  border-bottom: 1px solid rgb(159, 159, 159);
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
