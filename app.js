@@ -128,9 +128,7 @@ app.delete(
   })
 );
 
-app.get("*", (req, res, next) => {
-  next(new ExpressError(404, "Unfound Page!!!"));
-});
+
 //Error Handler
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something Went Wrong!" } = err;
