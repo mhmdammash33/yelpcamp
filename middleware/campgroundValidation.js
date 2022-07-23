@@ -1,5 +1,6 @@
 //validating campground using JOI
 const joi = require('joi');
+const ExpressError = require('../utilities/ExpressError')
 
 const validateCampground = (req, res, next) => {
   const campgroundSchema = joi.object({
