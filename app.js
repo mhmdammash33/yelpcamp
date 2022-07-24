@@ -8,6 +8,29 @@ const bodyParser = require("body-parser");
 const ExpressError = require("./utilities/ExpressError");
 const catchAsync = require("./utilities/catchAsync");
 
+//Session And Flash
+const session = require("express-session");
+app.use(
+  session({
+    secret: "ohyeahsecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
+
+const flash = require('connect-flash');
+app.use(flash());
+app.use((req,res,next)=>{
+  res.locals.successFlash = req.flash('success');
+  res.locals.errorFlash = req.flash('error');
+  next();
+})
+
+
 //Models:
 const Campground = require("./models/campground");
 const Review = require("./models/review");
@@ -20,7 +43,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, "public")));
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews);
 
