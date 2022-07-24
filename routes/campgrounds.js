@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utilities/catchAsync.js");
 const Campground = require("../models/campground");
@@ -23,7 +23,8 @@ router.post(
   catchAsync(async (req, res) => {
     const campground = await new Campground(req.body.campground);
     await campground.save();
-    res.redirect(`/campgrounds/${camp._id}`);
+    req.flash("success", "Successfully made a new Campground");
+    res.redirect(`/campgrounds/${campground._id}`);
   })
 );
 
@@ -33,6 +34,10 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id).populate("reviews");
+    if(!campground){
+      req.flash('error','Unfound Campground');
+      res.redirect('/campgrounds');
+    }
     res.render("campgrounds/show", { campground });
   })
 );
@@ -43,6 +48,10 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
+    if(!campground){
+      req.flash('error','campground not found')
+      res.redirect('/campgrounds');
+    }
     res.render(`campgrounds/edit`, { campground });
   })
 );
@@ -53,6 +62,9 @@ router.patch(
     await Campground.findByIdAndUpdate(req.params.id, {
       ...req.body.campground,
     });
+    req.flash(
+      'success','Successfully Updated Campground!!'
+    )
     res.redirect(`/campgrounds/${req.params.id}`);
   })
 );
@@ -63,6 +75,7 @@ router.delete(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
+    req.flash('error','Campground Deleted!!')
     res.redirect("/campgrounds");
   })
 );

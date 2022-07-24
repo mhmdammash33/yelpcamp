@@ -1,0 +1,9 @@
+<% if(successFlash && successFlash.length) {%>
+<div id="myAlert" class="alert alert-success fade show" role="alert">
+  <%= successFlash %>
+</div>
+<% } %> <% if(errorFlash && errorFlash.length) {%>
+<div id="myAlert" class="alert alert-danger fade show" role="alert">
+  <%= errorFlash %>
+</div>
+<% } %>
