@@ -3,7 +3,8 @@ const router = express.Router();
 const catchAsync = require("../utilities/catchAsync.js");
 const Campground = require("../models/campground");
 const validateCampground = require("../middleware/campgroundValidation");
-const isLoggedIn = require("../middleware/authentication/isLoggedIn");
+const isLoggedIn = require("../middleware/isLoggedIn");
+const isAuthor = require("../middleware/isAuthor");
 
 //index page show all
 router.get(
@@ -36,7 +37,12 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id).populate("reviews").populate('author');
+    const campground = await Campground.findById(id)
+      .populate({
+        path: "reviews",
+        populate: { path: "author" },
+      })
+      .populate("author");
     if (!campground) {
       req.flash("error", "Unfound Campground");
       res.redirect("/campgrounds");
@@ -49,20 +55,22 @@ router.get(
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isAuthor, //after making sure we have user, we make sure the user is the owner of this camp
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     if (!campground) {
-      req.flash("error", "campground not found");
-      res.redirect("/campgrounds");
+      req.flash("error", "Cannot find that Campground");
+      return res.redirect("/campgrounds");
     }
     res.render(`campgrounds/edit`, { campground });
   })
 );
 router.patch(
   "/:id",
-  validateCampground,
   isLoggedIn,
+  isAuthor,
+  validateCampground,
   catchAsync(async (req, res) => {
     await Campground.findByIdAndUpdate(req.params.id, {
       ...req.body.campground,
@@ -76,6 +84,7 @@ router.patch(
 router.delete(
   "/:id",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);

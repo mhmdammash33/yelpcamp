@@ -11,7 +11,9 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><%=campground.location%></li>
         <li class="list-group-item"><%=campground.price%>$/Night</li>
-        <li class="list-group-item text-muted">Submitted By: <%=campground.author.username %></li>
+        <li class="list-group-item text-muted">
+          Submitted By: <%=campground.author.username %>
+        </li>
         <% if(currentUser && campground.author._id.equals(currentUser._id)){ %>
         <li class="list-group-item d-flex">
           <a
@@ -78,13 +80,18 @@
     <div class="card mb-3">
       <div class="card-body">
         <h4 class="card-title">Rating: <%=review.rating%></h4>
+        <div class="card-subtitle text-muted">
+          By: <%=review.author.username%>
+        </div>
         <p class="card-text">Review: <%=review.body%></p>
+        <% if(currentUser && review.author._id.equals(currentUser._id)) { %>
         <form
           action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
           method="POST"
         >
           <button class="btn btn-danger btn-sm" type="submit">Delete</button>
         </form>
+        <% } %>
       </div>
     </div>
     <%}%>

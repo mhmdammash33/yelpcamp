@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const catchAsync = require("../utilities/catchAsync");
 const passport = require("passport");
-const isLoggedIn = require("../middleware/authentication/isLoggedIn");
+const isLoggedIn = require("../middleware/isLoggedIn");
 
 //REGISTER
 router.get("/register", (req, res) => {
@@ -17,7 +17,7 @@ router.post(
       const newUser = new User({ email, username });
       const registeredUser = await User.register(newUser, password);
       req.login(registeredUser, (err) => {
-        if (err) next(err);
+        if (err) return next(err);
       });
       req.flash("success", `welcome to YelpCamp ${username.toUpperCase()}`);
       res.redirect("/campgrounds");
