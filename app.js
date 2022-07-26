@@ -7,6 +7,9 @@ const createCamps = require("./seed");
 const bodyParser = require("body-parser");
 const ExpressError = require("./utilities/ExpressError");
 const catchAsync = require("./utilities/catchAsync");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 //Session And Flash
 const session = require("express-session");
@@ -22,15 +25,21 @@ app.use(
   })
 );
 
-const flash = require('connect-flash');
+const flash = require("connect-flash");
 app.use(flash());
-app.use((req,res,next)=>{
-  res.locals.successFlash = req.flash('success');
-  res.locals.errorFlash = req.flash('error');
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use((req, res, next) => {
+  res.locals.successFlash = req.flash("success");
+  res.locals.errorFlash = req.flash("error");
+  res.locals.currentUser = req.user;
   next();
-})
-
-
+});
 //Models:
 const Campground = require("./models/campground");
 const Review = require("./models/review");
@@ -38,6 +47,7 @@ const Review = require("./models/review");
 //Routes
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
+const users = require("./routes/users");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -46,6 +56,7 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews);
+app.use("/", users);
 
 mongoose
   .connect("mongodb://localhost:27017/yelpcamp_db")
@@ -58,6 +69,8 @@ const seedDB = catchAsync(async () => {
   createCamps();
 });
 seedDB();
+
+//USER ROUTES
 
 app.get("/", (req, res) => {
   res.render("home.ejs");

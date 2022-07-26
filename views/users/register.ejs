@@ -1,0 +1,48 @@
+<%- include('../../partials/header.ejs') %>
+
+<form action="/register" method="POST" class="validated-form" novalidate>
+    <div class="col-8 offset-2 col-lg-5 offset-lg-4">
+<h1 class="text-success text-center">REGISTER FORM</h1>
+    <div class="mb-3">
+    <div class="form-label" for="username">Username</div>
+    <input
+      class="form-control"
+      type="text"
+      id="username"
+      name="user[username]"
+      required
+    >
+    <div class="valid-feedback">Looks Great!!</div>
+    <div class="invalid-feedback">
+      Please provide a valid or Unused Username.
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="form-label" for="email">Email:</div>
+    <input
+      class="form-control"
+      type="email"
+      id="email"
+      name="user[email]"
+      required
+    ></input>
+    <div class="valid-feedback">Looks Great!!</div>
+    <div class="invalid-feedback">Please provide a valid or Unused Email.</div>
+  </div>
+  <div class="mb-3">
+    <div class="form-label" for="password">Password</div>
+    <input
+      class="form-control"
+      type="password"
+      id="password"
+      name="user[password]"
+      required
+    />
+    <div class="valid-feedback">Looks Great!!</div>
+    <div class="invalid-feedback">Please provide a valid Password.</div>
+  </div>
+  <button class="btn btn-success">Register</button>
+  </div>
+</form>
+
+<%- include('../../partials/footer.ejs'); %>

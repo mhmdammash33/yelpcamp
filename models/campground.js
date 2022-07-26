@@ -13,10 +13,14 @@ const CampgroundSchema = new mongoose.Schema({
       ref: "Review",
     },
   ],
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 CampgroundSchema.post("findOneAndDelete", async function (campground) {
-    //delete all reviews where it's id is found in deletedCampground Reviews reference ID
+  //delete all reviews where it's id is found in deletedCampground Reviews reference ID
   if (campground.reviews.length) {
     await Review.deleteMany({ _id: { $in: campground.reviews } });
   }
